@@ -1,0 +1,45 @@
+mysql> show databases;
+
+Mysql> create database Employeement;
+
+mysql> use Employeement;
+
+mysql> create table Employee(Emp_Id int(23) PRIMARY KEY, Emp_Name varchar(24),Emp_City varchar(24), Emp_DOB DATE, EMP_Department varchar(25), Emp_Salary Decimal(7,2));
+
+mysql> insert into Employee values(1,"kiran","Sambhajinagar",'2005-10-16',"IT",67000.90);
+
+mysql> insert into Employee values(2,"Dhano","Jalgoan",'2005-08-08',"Marketing",56000.90);
+
+mysql> insert into Employee values(3,"Priya","Jalgoan",'2005-12-01',"Production",46000.90);
+
+mysql> insert into Employee values(4,"Aman","Naskik",'2005-03-06',"HR",86000.90);
+
+mysql> insert into Employee values(5,"Rohan","Latur",'2005-03-04',"Production",45000.90);
+
+mysql> insert into Employee values(5,"Rohan","Latur",'2005-03-04',"Production",45000.90);
+
+mysql> insert into Employee values(6,"Sarvesh","Latur",'2002-11-07',"HR",1000.90);
+
+mysql> insert into Employee values(7,"Prajyot","Latur",'2002-11-07',"Marketing",5000.90);
+
+mysql> insert into Employee values(8,"Unnati","Nashik",'1999-11-07',"IT",7000.90);
+
+mysql> select * from Employee;
+
+mysql> select Emp_name from Employee where Emp_city="Mumbai";
+
+mysql> select Emp_name from Employee where Emp_city IN('Kolhapur','Solapur','Nagpur');
+
+mysql> select Emp_Name from Employee where Post="Manager" AND Emp_salary>30000.00;
+
+mysql> select Emp_Name from Employee where Emp_city="Mumbai" OR Emp_city="Pune";
+
+mysql> select Emp_Name from Employee where Emp_salary >500.00 AND Emp_Salary<56000.00;
+
+mysql> select SUM(Emp_salary) AS Total_Salary From Employee;
+
+mysql> alter table Employee ADD Post varchar(25);
+
+mysql> select * from Employee;
+
+mysql> update Employee set Post="Manager" where Emp_ID=3;
