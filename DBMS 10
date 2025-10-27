@@ -1,83 +1,32 @@
 mongo> show dbs 
-admin         40.00 KiB config       108.00 KiB local         72.00 KiB stu_details   72.00 KiB 
+
 mongo> use customer switched to db customer 
+
 customer> db.cust_tab.insertMany([{Item_id:01, Name: "Sakshi", Product: "Red Wine", Amount: 29000}, {Item_id:02, Name: "Sakshi", Product: "White Wine", Amount: 15000}, 
 {Item_id:03, Name: "Vaishnavi", Product: "Italian Cuisine", Amount: 5500}, {Item_id:04, 
 Name: "Vaishnavi", Product: "Coffee", Amount: 800}, {Item_id:05, Name: "Ankita", 
 Product: "Korean Ramen", Amount: 1800}]); 
-{ 
-  acknowledged: true,   insertedIds: { 
-    '0': ObjectId('66fff90c605fb35090c73bf8'), 
-    '1': ObjectId('66fff90c605fb35090c73bf9'),     '2': ObjectId('66fff90c605fb35090c73bfa'), 
-    '3': ObjectId('66fff90c605fb35090c73bfb'), 
-    '4': ObjectId('66fff90c605fb35090c73bfc') 
-  } } 
-customer> db.cust_tab.aggregate({$group: {_ID_: "$Name", "Total": {$sum: "Amount"}}}); MongoServerError[Location40234]: The field '_ID_' must be an accumulator object 
+
 customer> db.cust_tab.aggregate({$group: {_id: "$Name", "Total": {$sum: "Amount"}}}); 
-[ 
-  { _id: 'Vaishnavi', Total: 0 }, 
-  { _id: 'Sakshi', Total: 0 }, 
-  { _id: 'Ankita', Total: 0 } 
-] 
+ 
 customer> db.cust_tab.aggregate({$group: {_id: "$Name", "Total": {$sum: "$Amount"}}}); 
-[ 
-  { _id: 'Vaishnavi', Total: 6300 }, 
-  { _id: 'Sakshi', Total: 44000 }, 
-  { _id: 'Ankita', Total: 1800 } 
-] 
+ 
 customer> db.cust_tab.aggregate({$group: {_id: "$Name", "Total": {$avg: "$Amount"}}}); 
-[ 
-  { _id: 'Vaishnavi', Total: 3150 }, 
-  { _id: 'Sakshi', Total: 22000 }, 
-  { _id: 'Ankita', Total: 1800 } 
-] 
+
 customer> db.cust_tab.aggregate({$group: {_id: "$Name", "Total": {$min: "$Amount"}}}); 
-[ 
-  { _id: 'Vaishnavi', Total: 800 }, 
-  { _id: 'Sakshi', Total: 15000 }, 
-  { _id: 'Ankita', Total: 1800 } 
-] 
+ 
 customer> db.cust_tab.aggregate({$group: {_id: "$Name", "Total": {$max: "$Amount"}}}); 
-[ 
-  { _id: 'Sakshi', Total: 29000 }, 
-  { _id: 'Ankita', Total: 1800 }, 
-  { _id: 'Vaishnavi', Total: 5500 } 
-] 
+
 customer> db.cust_tab.aggregate({$group: {_id: "$Name", "Total": {$first: "$Amount"}}}); 
-[ 
-  { _id: 'Sakshi', Total: 29000 }, 
-  { _id: 'Vaishnavi', Total: 5500 }, 
-  { _id: 'Ankita', Total: 1800 } 
-] 
+
 customer> db.cust_tab.aggregate({$group: {_id: "$Name", "Total": {$last: "$Amount"}}}); 
-[ 
-  { _id: 'Vaishnavi', Total: 800 }, 
-  { _id: 'Sakshi', Total: 15000 }, 
-  { _id: 'Ankita', Total: 1800 } 
-] 
+ 
 customer> db.cust_tab.aggregate({$group: {_id: "$Name", "Total": {$push: "$Amount"}}}); 
-[ 
-  { _id: 'Sakshi', Total: [ 29000, 15000 ] }, 
-  { _id: 'Ankita', Total: [ 1800 ] }, 
-  { _id: 'Vaishnavi', Total: [ 5500, 800 ] } 
-] 
+
 customer> db.cust_tab.aggregate({$group: {_id: "$Name", "Total": {$sum:1}}}); 
-[ 
-  { _id: 'Sakshi', Total: 2 }, 
-  { _id: 'Ankita', Total: 1 }, 
-  { _id: 'Vaishnavi', Total: 2 } 
-] 
+
 customer> db.cust_tab.aggregate({$group: {_id: "$Name", "Total": {$addToSet:"$Amount"}}}); 
-[ 
-  { _id: 'Sakshi', Total: [ 15000, 29000 ] }, 
-  { _id: 'Ankita', Total: [ 1800 ] }, 
-  { _id: 'Vaishnavi', Total: [ 800, 5500 ] } ] 
+
 customer> db.cust_tab.createIndex({'Item_id':1}) Item_id_1 customer> db.cust_tab.createIndex({'Item_id':2}) Item_id_2 customer> db.cust_tab.createIndex({'Item_id':4}) Item_id_4 customer> db.cust_tab.dropIndex({'Item_id':4}) 
-{ nIndexesWas: 4, ok: 1 }
+
  customer> db.cust_tab.dropIndex({'Item_id':1}) 
-{ nIndexesWas: 3, ok: 1 } customer> db.cust_tab.getIndexes() 
-[ 
-  { v: 2, key: { _id: 1 }, name: '_id_' }, 
-  { v: 2, key: { Item_id: 2 }, name: 'Item_id_2' } 
-] 
-customer> 
