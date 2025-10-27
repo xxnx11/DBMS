@@ -1,0 +1,121 @@
+SQL> CREATE TABLE library_audit (
+date_modified DATE,
+ 	book_name VARCHAR2(25),
+  	old_status VARCHAR2(15),
+  	new_status VARCHAR2(15),
+ 	action VARCHAR2(25)
+ 	 );
+
+Table created.
+
+
+SQL> CREATE TABLE lib_tab (
+  	book_name VARCHAR2(25),
+  	status VARCHAR2(15)
+ 	);
+
+Table created.
+
+SQL> CREATE OR REPLACE TRIGGER trigger_1
+  	AFTER INSERT OR UPDATE OR DELETE ON lib_tab
+  	FOR EACH ROW
+  	BEGIN
+  	IF INSERTING THEN
+ 	dbms_output.put_line('Inserted status: ' || :NEW.status);
+  	INSERT INTO library_audit (date_modified, book_name, old_status, new_status, action)
+  	VALUES (SYSDATE, :NEW.book_name, NULL, :NEW.status, 'INSERT');
+  
+ 	ELSIF UPDATING THEN
+ 	dbms_output.put_line('Updated from ' || :OLD.status || ' to ' || :NEW.status);
+INSERT INTO library_audit (date_modified, book_name, old_status, new_status, action)
+VALUES (SYSDATE, :OLD.book_name, :OLD.status, :NEW.status, 'UPDATE');
+ 
+ 	ELSIF DELETING THEN
+ 	dbms_output.put_line('Deleting book: ' || :OLD.book_name);
+ 	INSERT INTO library_audit (date_modified, book_name, old_status, new_status, action)
+ 	VALUES (SYSDATE, :OLD.book_name, :OLD.status, NULL, 'DELETE');
+ 	END IF;
+ 	END;
+ 	/
+
+Trigger created.
+
+SQL> INSERT INTO lib_tab VALUES ('DARK MATTER', 'AVAILABLE');
+
+1 row created.
+
+SQL> INSERT INTO lib_tab VALUES ('SILENT HILL', 'UNAVAILABLE');
+
+1 row created.
+
+SQL> INSERT INTO lib_tab VALUES ('GOD OF WAR', 'AVAILABLE');
+
+1 row created.
+
+SQL> INSERT INTO lib_tab VALUES ('SPIDER-MAN', 'UNAVAILABLE');
+
+1 row created.
+
+SQL> INSERT INTO lib_tab VALUES ('UNCHARTED', 'AVAILABLE');
+
+1 row created.
+
+
+SQL> UPDATE lib_tab SET status = 'UNAVAILABLE' WHERE book_name = 'UNCHARTED';
+
+1 row updated.
+
+
+SQL> DELETE FROM lib_tab WHERE book_name = 'SILENT HILL';
+
+1 row deleted.
+
+
+SQL> INSERT INTO lib_tab VALUES ('SPM', 'UNAVAILABLE');
+
+1 row created.
+
+SQL> SELECT * FROM library_audit ORDER BY date_modified DESC;
+
+DATE_MODI BOOK_NAME                 OLD_STATUS      NEW_STATUS
+--------- ------------------------- --------------- ---------------
+ACTION
+-------------------------
+18-SEP-25 DARK MATTER                               AVAILABLE
+INSERT
+
+18-SEP-25 SILENT HILL                               UNAVAILABLE
+INSERT
+
+18-SEP-25 GOD OF WAR                                AVAILABLE
+INSERT
+
+
+DATE_MODI BOOK_NAME                 OLD_STATUS      NEW_STATUS
+--------- ------------------------- --------------- ---------------
+ACTION
+-------------------------
+18-SEP-25 SPM                                       UNAVAILABLE
+INSERT
+
+18-SEP-25 UNCHARTED                                 AVAILABLE
+INSERT
+
+18-SEP-25 UNCHARTED                 AVAILABLE       UNAVAILABLE
+UPDATE
+
+
+DATE_MODI BOOK_NAME                 OLD_STATUS      NEW_STATUS
+--------- ------------------------- --------------- ---------------
+ACTION
+-------------------------
+18-SEP-25 SILENT HILL               UNAVAILABLE
+DELETE
+
+18-SEP-25 SPIDER-MAN                                UNAVAILABLE
+INSERT
+
+
+8 rows selected.
+
+
